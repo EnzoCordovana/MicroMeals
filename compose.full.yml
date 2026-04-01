@@ -1,0 +1,108 @@
+services:
+  ihm:
+    build:
+      context: .
+      dockerfile: docker/ihm/Dockerfile
+    ports:
+      - "8080:80"
+    volumes:
+      - ./src:/var/www/src
+
+  plats:
+    build:
+      context: .
+      dockerfile: docker/plats/Dockerfile
+    ports:
+      - "3003:3003"
+    volumes:
+      - ./data/plats:/app/data/plats
+
+  db_plats:
+    image: mysql:8
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: db_plats
+    volumes:
+      - db_plats_data:/var/lib/mysql
+      - ./docker/plats/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+
+  phpmyadmin_plats:
+    image: phpmyadmin:latest
+    restart: always
+    ports:
+      - "8081:80"
+    environment:
+      PMA_HOST: db_plats
+      PMA_PORT: 3306
+    depends_on:
+      - db_plats
+
+  menus:
+    build:
+      context: .
+      dockerfile: docker/menus/Dockerfile
+    ports:
+      - "3004:3004"
+    volumes:
+      - ./data/menus:/app/data/menus
+    depends_on:
+      - plats
+
+  db_menus:
+    image: mysql:8
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: db_menus
+    volumes:
+      - db_menus_data:/var/lib/mysql
+      - ./docker/menus/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+
+  phpmyadmin_menus:
+    image: phpmyadmin:latest
+    restart: always
+    ports:
+      - "8082:80"
+    environment:
+      PMA_HOST: db_menus
+      PMA_PORT: 3306
+    depends_on:
+      - db_menus
+
+  commandes:
+    build:
+      context: .
+      dockerfile: docker/commandes/Dockerfile
+    ports:
+      - "3005:3005"
+    volumes:
+      - ./data/commandes:/app/data/commandes
+    depends_on:
+      - menus
+
+  db_commandes:
+    image: mysql:8
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: db_commandes
+    volumes:
+      - db_commandes_data:/var/lib/mysql
+      - ./docker/commandes/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+
+  phpmyadmin_commandes:
+    image: phpmyadmin:latest
+    restart: always
+    ports:
+      - "8083:80"
+    environment:
+      PMA_HOST: db_commandes
+      PMA_PORT: 3306
+    depends_on:
+      - db_commandes
+
+volumes:
+  db_plats_data:
+  db_menus_data:
+  db_commandes_data:

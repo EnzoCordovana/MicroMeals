@@ -1,0 +1,33 @@
+services:
+  plats:
+    build:
+      context: .
+      dockerfile: docker/plats/Dockerfile
+    ports:
+      - "3003:3003"
+    volumes:
+      - ./data/plats:/app/data/plats
+
+  db_plats:
+    image: mysql:8
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: db_plats
+    volumes:
+      - db_plats_data:/var/lib/mysql
+      - ./docker/plats/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    ports:
+      - "3306:3306"
+
+  phpmyadmin_plats:
+    image: phpmyadmin:latest
+    restart: always
+    ports:
+      - "8081:80"
+    environment:
+      PMA_HOST: db_plats
+      PMA_PORT: 3306
+
+volumes:
+  db_plats_data:

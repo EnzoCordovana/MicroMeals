@@ -1,0 +1,9 @@
+services:
+  ihm:
+    build:
+      context: .
+      dockerfile: docker/ihm/Dockerfile
+    ports:
+      - "8080:80"
+    volumes:
+      - ./src:/var/www/src

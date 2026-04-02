@@ -1,0 +1,260 @@
+openapi: 3.0.3
+info:
+  title: API Menus
+  description: >
+    Gestion des menus composÃ©s par les utilisateurs Ã  partir des plats disponibles.
+    Ce composant consomme l'API Plats et Utilisateurs pour valider les plats
+    et les crÃ©ateurs de menus (sans dupliquer leurs donnÃ©es).
+    ConsommÃ©e par le composant Commandes et l'IHM.
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8081/menus/api
+    description: Serveur de dÃ©veloppement local
+
+tags:
+  - name: Menus
+    description: OpÃ©rations CRUD sur les menus
+
+paths:
+  /menus:
+    get:
+      tags: [Menus]
+      summary: Lister tous les menus
+      operationId: getAllMenus
+      responses:
+        "200":
+          description: Liste des menus
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Menu"
+              example:
+                - id: 1
+                  nom: "Menu Provence"
+                  createurId: 2
+                  createurNom: "Martin"
+                  dateCreation: "2025-03-10"
+                  dateMiseAJour: "2025-03-12"
+                  plats:
+                    - id: 1
+                      nom: "Salade niÃ§oise"
+                      prix: 8.50
+                    - id: 3
+                      nom: "Gratin dauphinois"
+                      prix: 9.00
+                  prixTotal: 17.50
+
+    post:
+      tags: [Menus]
+      summary: CrÃ©er un nouveau menu
+      operationId: createMenu
+      description: >
+        CrÃ©e un menu vide. Les plats peuvent Ãªtre ajoutÃ©s ensuite via
+        PUT /menus/{id}/plats/{platId}.
+        Le composant appelle l'API Plats et Utilisateurs pour vÃ©rifier
+        que le crÃ©ateur existe.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MenuInput"
+            example:
+              nom: "Menu Soleil"
+              createurId: 2
+      responses:
+        "201":
+          description: Menu crÃ©Ã©
+          headers:
+            Location:
+              schema:
+                type: string
+                example: /menus/2
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Menu"
+        "400":
+          description: DonnÃ©es invalides
+        "404":
+          description: CrÃ©ateur introuvable (vÃ©rifiÃ© via API Plats et Utilisateurs)
+
+  /menus/{id}:
+    parameters:
+      - $ref: "#/components/parameters/IdPath"
+
+    get:
+      tags: [Menus]
+      summary: Obtenir un menu par son identifiant
+      operationId: getMenuById
+      responses:
+        "200":
+          description: Menu trouvÃ©
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Menu"
+        "404":
+          description: Menu introuvable
+
+    put:
+      tags: [Menus]
+      summary: Renommer un menu (mettre Ã  jour ses mÃ©tadonnÃ©es)
+      operationId: updateMenu
+      description: >
+        Met Ã  jour le nom du menu. La date de mise Ã  jour est calculÃ©e
+        automatiquement cÃ´tÃ© serveur.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MenuInput"
+      responses:
+        "200":
+          description: Menu mis Ã  jour
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Menu"
+        "404":
+          description: Menu introuvable
+
+    delete:
+      tags: [Menus]
+      summary: Supprimer un menu
+      operationId: deleteMenu
+      responses:
+        "204":
+          description: Menu supprimÃ©
+        "404":
+          description: Menu introuvable
+
+  /menus/{id}/plats/{platId}:
+    parameters:
+      - $ref: "#/components/parameters/IdPath"
+      - name: platId
+        in: path
+        required: true
+        schema:
+          type: integer
+          minimum: 1
+
+    put:
+      tags: [Menus]
+      summary: Ajouter un plat au menu
+      operationId: addPlatToMenu
+      description: >
+        Ajoute le plat identifiÃ© par platId au menu.
+        Le composant appelle l'API Plats et Utilisateurs pour vÃ©rifier
+        que le plat existe avant de l'ajouter.
+      responses:
+        "200":
+          description: Plat ajoutÃ©, menu mis Ã  jour retournÃ©
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Menu"
+        "404":
+          description: Menu ou plat introuvable
+        "409":
+          description: Plat dÃ©jÃ  prÃ©sent dans ce menu
+
+    delete:
+      tags: [Menus]
+      summary: Retirer un plat du menu
+      operationId: removePlatFromMenu
+      responses:
+        "200":
+          description: Plat retirÃ©, menu mis Ã  jour retournÃ©
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Menu"
+        "404":
+          description: Menu introuvable ou plat absent du menu
+
+components:
+  parameters:
+    IdPath:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+        minimum: 1
+
+  schemas:
+    PlatResume:
+      description: >
+        ReprÃ©sentation allÃ©gÃ©e d'un plat, stockÃ©e dans la BDD Menus.
+        Seul l'id est conservÃ© cÃ´tÃ© Menus ; nom et prix sont rÃ©cupÃ©rÃ©s
+        via l'API Plats et Utilisateurs Ã  la demande (ou mis en cache).
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        nom:
+          type: string
+          readOnly: true
+          example: "Salade niÃ§oise"
+        prix:
+          type: number
+          format: double
+          readOnly: true
+          example: 8.50
+
+    Menu:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+          example: 1
+        nom:
+          type: string
+          example: "Menu Provence"
+        createurId:
+          type: integer
+          description: Identifiant de l'abonnÃ© crÃ©ateur (FK vers API Plats et Utilisateurs)
+          example: 2
+        createurNom:
+          type: string
+          readOnly: true
+          description: Nom rÃ©cupÃ©rÃ© via l'API Plats et Utilisateurs
+          example: "Martin"
+        dateCreation:
+          type: string
+          format: date
+          readOnly: true
+          example: "2025-03-10"
+        dateMiseAJour:
+          type: string
+          format: date
+          readOnly: true
+          example: "2025-03-12"
+        plats:
+          type: array
+          items:
+            $ref: "#/components/schemas/PlatResume"
+        prixTotal:
+          type: number
+          format: double
+          readOnly: true
+          description: Somme des prix des plats, calculÃ©e cÃ´tÃ© serveur
+          example: 17.50
+
+    MenuInput:
+      type: object
+      required: [nom, createurId]
+      properties:
+        nom:
+          type: string
+          example: "Menu Soleil"
+        createurId:
+          type: integer
+          example: 2

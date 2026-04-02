@@ -1,0 +1,33 @@
+services:
+  menus:
+    build:
+      context: .
+      dockerfile: docker/menus/Dockerfile
+    ports:
+      - "3004:3004"
+    volumes:
+      - ./data/menus:/app/data/menus
+
+  db_menus:
+    image: mysql:8
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: db_menus
+    volumes:
+      - db_menus_data:/var/lib/mysql
+      - ./docker/menus/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    ports:
+      - "3306:3306"
+
+  phpmyadmin_menus:
+    image: phpmyadmin:latest
+    restart: always
+    ports:
+      - "8082:80"
+    environment:
+      PMA_HOST: db_menus
+      PMA_PORT: 3306
+
+volumes:
+  db_menus_data:

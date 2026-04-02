@@ -1,0 +1,33 @@
+services:
+  commandes:
+    build:
+      context: .
+      dockerfile: docker/commandes/Dockerfile
+    ports:
+      - "3005:3005"
+    volumes:
+      - ./data/commandes:/app/data/commandes
+
+  db_commandes:
+    image: mysql:8
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: db_commandes
+    volumes:
+      - db_commandes_data:/var/lib/mysql
+      - ./docker/commandes/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    ports:
+      - "3306:3306"
+
+  phpmyadmin_commandes:
+    image: phpmyadmin:latest
+    restart: always
+    ports:
+      - "8083:80"
+    environment:
+      PMA_HOST: db_commandes
+      PMA_PORT: 3306
+
+volumes:
+  db_commandes_data:

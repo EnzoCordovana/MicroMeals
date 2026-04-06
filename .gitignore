@@ -1,2 +1,16 @@
 node_modules
 Makefile
+
+# Fichiers de compilation Maven
+target/
+
+# Config IntelliJ
+.idea/
+*.iml
+
+# Claude Code
+.claude/
+CLAUDE.md
+
+# Surcharges locales Docker (spécifiques à chaque dev)
+*.local.yml

@@ -20,3 +20,18 @@ INSERT INTO Food (nom, description, prix) VALUES
     ('Poulet roti', 'Poulet fermier roti aux herbes de Provence', 11.00),
     ('Mousse au chocolat', 'Mousse au chocolat noir maison', 5.00),
     ('Tarte tropezienne', 'Brioche garnie de creme a la fleur d oranger', 5.50);
+
+CREATE TABLE IF NOT EXISTS Utilisateur (
+    id      INT AUTO_INCREMENT PRIMARY KEY,
+    nom     VARCHAR(255) NOT NULL,
+    prenom  VARCHAR(255) NOT NULL,
+    email   VARCHAR(255) NOT NULL UNIQUE,
+    adresse TEXT         NOT NULL
+);
+
+INSERT INTO Utilisateur (nom, prenom, email, adresse) VALUES
+    ('Dupont',   'Marie',   'marie.dupont@email.fr',   '12 rue des Lilas, 13001 Marseille'),
+    ('Martin',   'Jean',    'jean.martin@email.fr',    '5 avenue du Port, 13002 Marseille'),
+    ('Petit',    'Sophie',  'sophie.petit@email.fr',   '8 boulevard Longchamp, 13001 Marseille'),
+    ('Bernard',  'Pierre',  'pierre.bernard@email.fr', '22 rue Saint-Ferreol, 13001 Marseille'),
+    ('Durand',   'Claire',  'claire.durand@email.fr',  '3 cours Julien, 13006 Marseille');

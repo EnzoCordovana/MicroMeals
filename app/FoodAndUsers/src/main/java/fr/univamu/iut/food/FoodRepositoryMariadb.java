@@ -5,7 +5,8 @@ import java.sql.*;
 import java.util.ArrayList;
 
 /**
- * Classe permettant d'acceder aux plats stockes dans une base de donnees Mariadb
+ * Classe permettant d'acceder aux plats stockes dans une base de donnees Mariadb.
+ * Implemente FoodRepositoryInterface.
  */
 public class FoodRepositoryMariadb implements FoodRepositoryInterface, Closeable {
 
@@ -149,4 +150,5 @@ public class FoodRepositoryMariadb implements FoodRepositoryInterface, Closeable
 
         return (nbRowModified != 0);
     }
+
 }

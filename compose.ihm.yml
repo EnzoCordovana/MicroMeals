@@ -6,4 +6,11 @@ services:
     ports:
       - "8080:80"
     volumes:
-      - ./src:/var/www/src
+      - ./app/ihm/src:/var/www/src
+      - ./app/ihm/.env:/var/www/src/.env:ro
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      - API_PLATS_URL=http://host.docker.internal:3003
+      - API_MENUS_URL=http://host.docker.internal:3004
+      - API_COMMANDES_URL=http://host.docker.internal:3005

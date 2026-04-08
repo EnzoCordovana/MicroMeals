@@ -71,4 +71,22 @@ public class UserTest {
         assertEquals(u1.getNom(), u2.getNom());
         assertEquals(u1.getEmail(), u2.getEmail());
     }
+
+    @Test
+    @Order(6)
+    @DisplayName("Constructeur avec password initialise correctement le mot de passe")
+    void testConstructeurAvecPassword() {
+        User user = new User("Dupont", "Marie", "marie.dupont@email.fr", "12 rue des Lilas", "secret");
+        assertEquals("secret", user.getPassword());
+    }
+
+    @Test
+    @Order(7)
+    @DisplayName("setPassword modifie le mot de passe correctement")
+    void testSetPassword() {
+        User user = new User();
+        assertNull(user.getPassword());
+        user.setPassword("monMotDePasse");
+        assertEquals("monMotDePasse", user.getPassword());
+    }
 }

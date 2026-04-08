@@ -74,7 +74,7 @@ public class UserService {
      * @return une chaine de caractere contenant les informations de l'utilisateur cree au format JSON
      */
     public String createUserJSON(User user) {
-        int newId = userRepo.createUser(user.getNom(), user.getPrenom(), user.getEmail(), user.getAdresse());
+        int newId = userRepo.createUser(user.getNom(), user.getPrenom(), user.getEmail(), user.getAdresse(), "");
         user.setId(newId);
 
         String result = null;

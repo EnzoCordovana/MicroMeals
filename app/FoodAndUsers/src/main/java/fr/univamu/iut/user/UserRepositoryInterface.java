@@ -42,9 +42,10 @@ public interface UserRepositoryInterface {
      * @param prenom prenom de l'utilisateur
      * @param email adresse email de l'utilisateur
      * @param adresse adresse postale de l'utilisateur
+     * @param password mot de passe de l'utilisateur
      * @return l'identifiant genere pour le nouvel utilisateur
      */
-    public int createUser(String nom, String prenom, String email, String adresse);
+    public int createUser(String nom, String prenom, String email, String adresse, String password);
 
     /**
      * Methode permettant de supprimer un utilisateur

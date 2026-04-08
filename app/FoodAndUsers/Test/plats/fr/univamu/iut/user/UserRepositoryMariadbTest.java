@@ -125,7 +125,7 @@ public class UserRepositoryMariadbTest {
     @Order(9)
     @DisplayName("createUser et deleteUser fonctionnent correctement")
     void testCreateAndDeleteUser() {
-        int newId = userRepo.createUser("Nouveau", "Utilisateur", "nouveau.utilisateur@test.fr", "99 rue Neuve");
+        int newId = userRepo.createUser("Nouveau", "Utilisateur", "nouveau.utilisateur@test.fr", "99 rue Neuve", "motdepasse");
         assertTrue(newId > 0, "L'id genere devrait etre positif");
 
         User created = userRepo.getUser(newId);
@@ -138,6 +138,20 @@ public class UserRepositoryMariadbTest {
 
         User afterDelete = userRepo.getUser(newId);
         assertNull(afterDelete, "L'utilisateur supprime ne devrait plus exister");
+    }
+
+    @Test
+    @Order(11)
+    @DisplayName("getUserByEmail charge bien le mot de passe depuis la base")
+    void testGetUserByEmailChargePassword() {
+        ArrayList<User> users = userRepo.getAllUsers();
+        assertFalse(users.isEmpty());
+        String email = users.get(0).getEmail();
+
+        User found = userRepo.getUserByEmail(email);
+        assertNotNull(found);
+        // le password doit etre charge (non null) pour que l'authentification fonctionne
+        assertNotNull(found.getPassword(), "Le password charge depuis la BDD ne devrait pas etre null");
     }
 
     @Test

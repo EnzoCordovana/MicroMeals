@@ -3,11 +3,15 @@ package fr.univamu.iut.user;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
+import jakarta.ws.rs.container.ContainerRequestContext;
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.Response;
+
+import java.util.Base64;
 
 /**
  * Ressource associee a l'authentification des utilisateurs.
- * Expose le endpoint GET /utilisateurs/connexion?email=...
+ * Expose le endpoint GET /utilisateurs/connexion avec HTTP Basic Auth.
  *
  * Ce chemin est plus specifique que /utilisateurs/{id}, donc JAX-RS
  * le resoudra en priorite (un chemin litteral prend precedence sur un template).
@@ -36,25 +40,38 @@ public class UserAuthentificationRessource {
     }
 
     /**
-     * Endpoint permettant de retrouver un utilisateur par son email.
-     * Exemple : GET /api/utilisateurs/connexion?email=marie.dupont@email.fr
+     * Endpoint permettant d'authentifier un utilisateur via HTTP Basic Auth.
+     * L'identifiant utilise est l'adresse email.
      *
-     * @param email l'adresse email de l'utilisateur a rechercher
-     * @return les informations de l'utilisateur au format JSON (200 OK),
-     *         400 si le parametre email est absent,
-     *         404 si aucun utilisateur ne correspond
+     * Exemple : curl -u email:password -X GET http://localhost:3003/api/utilisateurs/connexion
+     *
+     * @param requestContext contexte de la requete HTTP (pour lire le header Authorization)
+     * @return true si l'authentification reussit, false sinon, 401 si le header est absent
      */
     @GET
-    @Produces("application/json")
-    public Response authenticate(@QueryParam("email") String email) {
-        if (email == null || email.isBlank())
-            throw new BadRequestException("Le parametre 'email' est requis");
+    @Produces("text/plain")
+    public Response authenticate(@Context ContainerRequestContext requestContext) {
+        String authHeader = requestContext.getHeaderString("Authorization");
 
-        String result = authService.getUserByEmailJSON(email);
+        if (authHeader == null || !authHeader.startsWith("Basic")) {
+            return Response.status(Response.Status.UNAUTHORIZED)
+                    .header("WWW-Authenticate", "Basic realm=\"utilisateurs\"")
+                    .build();
+        }
 
-        if (result == null)
-            throw new NotFoundException("Aucun utilisateur avec l'email : " + email);
+        String decoded = new String(Base64.getDecoder().decode(authHeader.split(" ")[1]));
+        String[] tokens = decoded.split(":", 2);
 
-        return Response.ok(result).build();
+        if (tokens.length != 2) {
+            return Response.status(Response.Status.UNAUTHORIZED)
+                    .header("WWW-Authenticate", "Basic realm=\"utilisateurs\"")
+                    .build();
+        }
+
+        String email = tokens[0];
+        String password = tokens[1];
+
+        boolean result = authService.isValidUser(email, password);
+        return Response.ok(String.valueOf(result)).build();
     }
 }

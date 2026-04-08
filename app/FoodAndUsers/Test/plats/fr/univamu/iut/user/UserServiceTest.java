@@ -90,7 +90,7 @@ public class UserServiceTest {
         User original = userRepo.getUser(1);
         assertNotNull(original);
 
-        User updated = new User("Nom Service Test", "Prenom Service Test", "service.test@email.fr", "1 rue du Service");
+        User updated = new User("Nom Service Test", "Prenom Service Test", "service.test@email.fr", "1 rue du Service", "");
         boolean result = userService.updateUser(1, updated);
         assertTrue(result, "La mise a jour devrait reussir");
 
@@ -106,7 +106,7 @@ public class UserServiceTest {
     @Order(7)
     @DisplayName("updateUser retourne false pour un id inexistant")
     void testUpdateUserInexistant() {
-        User user = new User("Test", "Test", "test@test.fr", "Test");
+        User user = new User("Test", "Test", "test@test.fr", "Test", "");
         boolean result = userService.updateUser(-1, user);
         assertFalse(result, "La mise a jour d'un utilisateur inexistant devrait echouer");
     }

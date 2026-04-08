@@ -84,8 +84,8 @@ public class UserRepositoryMariadb implements UserRepositoryInterface, Closeable
     }
 
     @Override
-    public int createUser(String nom, String prenom, String email, String adresse) {
-        String query = "INSERT INTO Utilisateur (nom, prenom, email, adresse) VALUES (?, ?, ?, ?)";
+    public int createUser(String nom, String prenom, String email, String adresse, String password) {
+        String query = "INSERT INTO Utilisateur (nom, prenom, email, adresse, password) VALUES (?, ?, ?, ?, ?)";
         int generatedId = 0;
 
         try (PreparedStatement ps = dbConnection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
@@ -93,6 +93,7 @@ public class UserRepositoryMariadb implements UserRepositoryInterface, Closeable
             ps.setString(2, prenom);
             ps.setString(3, email);
             ps.setString(4, adresse);
+            ps.setString(5, password);
             ps.executeUpdate();
 
             ResultSet keys = ps.getGeneratedKeys();
@@ -152,6 +153,7 @@ public class UserRepositoryMariadb implements UserRepositoryInterface, Closeable
                         result.getString("adresse")
                 );
                 selectedUser.setId(result.getInt("id"));
+                selectedUser.setPassword(result.getString("password"));
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);

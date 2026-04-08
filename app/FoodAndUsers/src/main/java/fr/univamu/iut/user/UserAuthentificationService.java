@@ -1,11 +1,8 @@
 package fr.univamu.iut.user;
 
-import jakarta.json.bind.Jsonb;
-import jakarta.json.bind.JsonbBuilder;
-
 /**
  * Service d'authentification des utilisateurs.
- * Verifie qu'un utilisateur existe dans la base de donnees a partir de son email.
+ * Verifie qu'un utilisateur existe et que son mot de passe est correct.
  */
 public class UserAuthentificationService {
 
@@ -23,22 +20,20 @@ public class UserAuthentificationService {
     }
 
     /**
-     * Methode retournant les informations d'un utilisateur identifie par son email, au format JSON.
-     * Retourne null si aucun utilisateur ne correspond a cet email.
-     * @param email l'adresse email a verifier
-     * @return les informations de l'utilisateur au format JSON, ou null s'il n'existe pas
+     * Methode permettant d'authentifier un utilisateur par son email et son mot de passe
+     * @param email l'adresse email de l'utilisateur
+     * @param password le mot de passe a verifier
+     * @return true si l'utilisateur existe et que le mot de passe est correct, false sinon
      */
-    public String getUserByEmailJSON(String email) {
-        String result = null;
+    public boolean isValidUser(String email, String password) {
         User user = userRepo.getUserByEmail(email);
 
-        if (user != null) {
-            try (Jsonb jsonb = JsonbBuilder.create()) {
-                result = jsonb.toJson(user);
-            } catch (Exception e) {
-                System.err.println(e.getMessage());
-            }
-        }
-        return result;
+        if (user == null)
+            return false;
+
+        if (!user.getPassword().equals(password))
+            return false;
+
+        return true;
     }
 }

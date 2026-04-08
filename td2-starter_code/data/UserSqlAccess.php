@@ -1,0 +1,53 @@
+<?php
+
+namespace data;
+
+use service\UserAccessInterface;
+include_once "service/UserAccessInterface.php";
+
+use domain\User;
+include_once "domain/User.php";
+
+class UserSqlAccess implements UserAccessInterface
+{
+    protected $dataAccess = null;
+
+    public function __construct($dataAccess)
+    {
+        $this->dataAccess = $dataAccess;
+    }
+
+    public function __destruct()
+    {
+        $this->dataAccess = null;
+    }
+
+    public function getUser($login, $password)
+    {
+        $user = null;
+
+        $query = 'SELECT * FROM Users WHERE login="' . $login . '" and password="' . $password . '"';
+        $result = $this->dataAccess->query($query);
+
+        if ( $row = $result->fetch() )
+            $user = new User( $row['login'] , $row['password'] );
+
+        $result->closeCursor();
+
+        return $user;
+    }
+
+    public function createUser($login, $password)
+    {
+        $query = 'INSERT INTO Users(login, password) VALUES("' . $login . '","'
+            . $password .'")';
+
+        try {
+            $this->dataAccess->query($query);
+        }
+        catch ( \PDOException $e){
+            return false;
+        }
+        return true;
+    }
+}

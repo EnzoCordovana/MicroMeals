@@ -1,4 +1,4 @@
-package fr.univamu.iut.micromealscommandes;
+package fr.univamu.iut.micromealscommandes.menu;
 
 import java.io.Closeable;
 import jakarta.ws.rs.client.Client;

@@ -1,4 +1,4 @@
-package fr.univamu.iut.micromealscommandes;
+package fr.univamu.iut.micromealscommandes.commande;
 
 import java.io.Closeable;
 import java.sql.*;

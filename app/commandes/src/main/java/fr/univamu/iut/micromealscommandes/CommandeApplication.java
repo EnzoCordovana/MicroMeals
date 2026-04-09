@@ -1,5 +1,9 @@
 package fr.univamu.iut.micromealscommandes;
 
+import fr.univamu.iut.micromealscommandes.commande.CommandeRepositoryInterface;
+import fr.univamu.iut.micromealscommandes.commande.CommandeRepositoryMariadb;
+import fr.univamu.iut.micromealscommandes.menu.MenuRepositoryAPI;
+import fr.univamu.iut.micromealscommandes.menu.MenuRepositoryInterface;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Disposes;
 import jakarta.enterprise.inject.Produces;

@@ -1,5 +1,7 @@
-package fr.univamu.iut.micromealscommandes;
+package fr.univamu.iut.micromealscommandes.commande;
 
+import fr.univamu.iut.micromealscommandes.menu.Menu;
+import fr.univamu.iut.micromealscommandes.menu.MenuRepositoryInterface;
 import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
 import java.time.LocalDateTime;

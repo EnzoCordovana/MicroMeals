@@ -1,4 +1,4 @@
-package fr.univamu.iut.micromealscommandes;
+package fr.univamu.iut.micromealscommandes.menu;
 
 public class Menu {
 

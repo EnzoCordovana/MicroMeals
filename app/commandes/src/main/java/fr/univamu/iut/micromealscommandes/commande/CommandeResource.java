@@ -1,5 +1,6 @@
-package fr.univamu.iut.micromealscommandes;
+package fr.univamu.iut.micromealscommandes.commande;
 
+import fr.univamu.iut.micromealscommandes.menu.MenuRepositoryInterface;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;

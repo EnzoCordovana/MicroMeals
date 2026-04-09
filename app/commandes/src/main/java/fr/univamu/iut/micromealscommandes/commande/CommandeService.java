@@ -8,16 +8,30 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
+/**
+ * Service gerant la logique metier liee aux commandes
+ */
 public class CommandeService {
 
     protected CommandeRepositoryInterface commandeRepo;
     protected MenuRepositoryInterface menuRepo;
 
+    /**
+     * Initialise le service avec les depots necessaires
+     *
+     * @param commandeRepo depot des commandes
+     * @param menuRepo     depot des menus
+     */
     public CommandeService(CommandeRepositoryInterface commandeRepo, MenuRepositoryInterface menuRepo) {
         this.commandeRepo = commandeRepo;
         this.menuRepo = menuRepo;
     }
 
+    /**
+     * Retourne toutes les commande au format JSON
+     *
+     * @return chaine JSON representant la liste des commandes
+     */
     public String getAllCommandesJSON() {
         ArrayList<Commande> allCommandes = commandeRepo.getAllCommandes();
 
@@ -31,6 +45,12 @@ public class CommandeService {
         return result;
     }
 
+    /**
+     * Retourne les commandes d'un abonne au format JSON
+     *
+     * @param abonneId identifiant de l'abonne
+     * @return chaine JSON representant les commandes de l'abonne
+     */
     public String getCommandesByAbonneIdJSON(int abonneId) {
         ArrayList<Commande> commandes = commandeRepo.getCommandesByAbonneId(abonneId);
 
@@ -44,6 +64,12 @@ public class CommandeService {
         return result;
     }
 
+    /**
+     * Retourne une commande au format JSON
+     *
+     * @param id identifiant de la commande
+     * @return chaine JSON, ou {@code null} si introuvable
+     */
     public String getCommandeJSON(int id) {
         String result = null;
         Commande myCommande = commandeRepo.getCommande(id);
@@ -58,6 +84,13 @@ public class CommandeService {
         return result;
     }
 
+    /**
+     * Cree une commande a partir des donnees d'entree
+     * Vérifie la disponibilité de chaque menu auprès de l'API externe.
+     *
+     * @param input donnees de la commande
+     * @return la commande creee au format JSON, ou {@code null} si un menu est introuvable
+     */
     public String createCommande(CommandeInput input) {
 
         ArrayList<LigneCommande> lignes = new ArrayList<>();
@@ -104,6 +137,13 @@ public class CommandeService {
         return result;
     }
 
+    /**
+     * Met a jour les informations de livraison d'une commande
+     *
+     * @param id    identifiant de la commande
+     * @param input nouvelles donnees de livraison
+     * @return la commande mise a jour au format JSON, ou {@code null} si introuvable
+     */
     public String updateCommande(int id, CommandeUpdateInput input) {
         boolean updated = commandeRepo.updateCommande(id, input.getAdresseLivraison(), input.getDateLivraison());
 
@@ -113,6 +153,12 @@ public class CommandeService {
         return getCommandeJSON(id);
     }
 
+    /**
+     * Supprime une commande
+     *
+     * @param id identifiant de la commande
+     * @return {@code true} si la suppression a reussi
+     */
     public boolean deleteCommande(int id) {
         return commandeRepo.deleteCommande(id);
     }

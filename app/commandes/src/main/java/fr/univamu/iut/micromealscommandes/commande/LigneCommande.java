@@ -1,5 +1,8 @@
 package fr.univamu.iut.micromealscommandes.commande;
 
+/**
+ * Entite representant une ligne d'une commande, associee a un menu particulier
+ */
 public class LigneCommande {
 
     protected int menuId;
@@ -11,6 +14,14 @@ public class LigneCommande {
     public LigneCommande() {
     }
 
+    /**
+     * Crée une ligne de commande et calcule automatiquement le prix total de la ligne.
+     *
+     * @param menuId       identifiant du menu
+     * @param menuNom      nom du menu
+     * @param quantite     quantite commandee
+     * @param prixUnitaire prix unitaire du menu
+     */
     public LigneCommande(int menuId, String menuNom, int quantite, double prixUnitaire) {
         this.menuId = menuId;
         this.menuNom = menuNom;

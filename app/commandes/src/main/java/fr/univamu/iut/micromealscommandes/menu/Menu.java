@@ -1,5 +1,8 @@
 package fr.univamu.iut.micromealscommandes.menu;
 
+/**
+ * Entite representant un menu disponible a la commande
+ */
 public class Menu {
 
     protected int id;
@@ -9,6 +12,13 @@ public class Menu {
     public Menu() {
     }
 
+    /**
+     * Cree un menu avec ses informations principales
+     *
+     * @param id        identifiant du menu
+     * @param nom       nom du menu
+     * @param prixTotal prix total du menu
+     */
     public Menu(int id, String nom, double prixTotal) {
         this.id = id;
         this.nom = nom;

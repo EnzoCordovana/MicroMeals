@@ -2,6 +2,10 @@ package fr.univamu.iut.micromealscommandes.commande;
 
 import java.util.ArrayList;
 
+/**
+ * Entite representant une commande passee par un abonne,
+ * contenant les lignes de commande et le prix total
+ */
 public class Commande {
 
     protected int id;
@@ -15,6 +19,13 @@ public class Commande {
     public Commande() {
     }
 
+    /**
+     * Cree une commande avec les informations de livraison
+     *
+     * @param abonneId         identifiant de l'abonné
+     * @param adresseLivraison adresse de livraison
+     * @param dateLivraison    date souhaitee de livraison
+     */
     public Commande(int abonneId, String adresseLivraison, String dateLivraison) {
         this.abonneId = abonneId;
         this.adresseLivraison = adresseLivraison;

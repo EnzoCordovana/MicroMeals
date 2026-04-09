@@ -4,10 +4,22 @@ import java.io.Closeable;
 import java.sql.*;
 import java.util.ArrayList;
 
+/**
+ * Implementation de {@link CommandeRepositoryInterface} utilisant une base de donnees MariaDB
+ */
 public class CommandeRepositoryMariadb implements CommandeRepositoryInterface, Closeable {
 
     protected Connection dbConnection;
 
+    /**
+     * Initialise la connexion a la base de donnees
+     *
+     * @param infoConnection URL de connexion JDBC
+     * @param user           nom d'utilisateur
+     * @param pwd            mot de passe
+     * @throws SQLException           en cas d'erreur SQL
+     * @throws ClassNotFoundException si le driver MariaDB est introuvable
+     */
     public CommandeRepositoryMariadb(String infoConnection, String user, String pwd) throws java.sql.SQLException, java.lang.ClassNotFoundException {
         Class.forName("org.mariadb.jdbc.Driver");
         dbConnection = DriverManager.getConnection(infoConnection, user, pwd);
@@ -195,6 +207,12 @@ public class CommandeRepositoryMariadb implements CommandeRepositoryInterface, C
         return (nbRowModified != 0);
     }
 
+    /**
+     * Recupere les lignes de commande associees a une commande.
+     *
+     * @param commandeId identifiant de la commande
+     * @return liste des lignes de commande
+     */
     private ArrayList<LigneCommande> getLignesCommande(int commandeId) {
         ArrayList<LigneCommande> lignes = new ArrayList<>();
 

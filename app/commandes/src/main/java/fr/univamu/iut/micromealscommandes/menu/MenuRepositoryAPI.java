@@ -7,10 +7,19 @@ import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
+/**
+ * Implementation de {@link MenuRepositoryInterface} accedant a une API REST externe
+ * pour récupérer les informations des menus.
+ */
 public class MenuRepositoryAPI implements MenuRepositoryInterface, Closeable {
 
     String url;
 
+    /**
+     * Cree une instance pointant vers l'URL de base de l'API des menus
+     *
+     * @param url URL de base de l'API
+     */
     public MenuRepositoryAPI(String url) {
         this.url = url;
     }
@@ -19,6 +28,12 @@ public class MenuRepositoryAPI implements MenuRepositoryInterface, Closeable {
     public void close() {
     }
 
+    /**
+     * Recupere un menu depuis l'API externe
+     *
+     * @param id identifiant du menu
+     * @return le menu correspondant, ou {@code null} si introuvable ou en cas d'erreur
+     */
     @Override
     public Menu getMenu(int id) {
         Menu myMenu = null;

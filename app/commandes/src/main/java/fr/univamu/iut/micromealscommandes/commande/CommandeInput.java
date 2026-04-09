@@ -2,6 +2,9 @@ package fr.univamu.iut.micromealscommandes.commande;
 
 import java.util.ArrayList;
 
+/**
+ * Objet d'entree contenant les donnees necessaires a la creation d'une commande
+ */
 public class CommandeInput {
 
     protected int abonneId;
@@ -12,6 +15,14 @@ public class CommandeInput {
     public CommandeInput() {
     }
 
+    /**
+     * Cree un objet d'entree avec toutes les informations de commande
+     *
+     * @param abonneId         identifiant de l'abonne
+     * @param adresseLivraison adresse de livraison
+     * @param dateLivraison    date souhaitee de livraison
+     * @param lignes           lignes de la commande
+     */
     public CommandeInput(int abonneId, String adresseLivraison, String dateLivraison, ArrayList<LigneCommandeInput> lignes) {
         this.abonneId = abonneId;
         this.adresseLivraison = adresseLivraison;

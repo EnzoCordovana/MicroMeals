@@ -6,6 +6,9 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Response;
 
+/**
+ * Ressource REST exposant les endpoints de gestion des commandes
+ */
 @Path("/commandes")
 @ApplicationScoped
 public class CommandeResource {
@@ -19,6 +22,12 @@ public class CommandeResource {
         this.service = new CommandeService(commandeRepo, menuRepo);
     }
 
+    /**
+     * Retourne toutes les commandes, ou celles d'un abonne si {@code abonneId} est fourni
+     *
+     * @param abonneId identifiant optionnel de l'abonne
+     * @return les commandes au format JSON
+     */
     @GET
     @Produces("application/json")
     public String getAllCommandes(@QueryParam("abonneId") Integer abonneId) {
@@ -28,6 +37,13 @@ public class CommandeResource {
         return service.getAllCommandesJSON();
     }
 
+    /**
+     * Retourne une commande par son identifiant
+     *
+     * @param id identifiant de la commande
+     * @return la commande au format JSON
+     * @throws NotFoundException si la commande est introuvable
+     */
     @GET
     @Path("{id}")
     @Produces("application/json")
@@ -41,6 +57,12 @@ public class CommandeResource {
         return result;
     }
 
+    /**
+     * Cree une nouvelle commande
+     *
+     * @param input donnees de la commande a creer
+     * @return la commande creee au format JSON
+     */
     @POST
     @Consumes("application/json")
     @Produces("application/json")
@@ -54,6 +76,14 @@ public class CommandeResource {
         return Response.status(Response.Status.CREATED).entity(result).build();
     }
 
+    /**
+     * Met a jour une commande existante
+     *
+     * @param id    identifiant de la commande
+     * @param input nouvelles donnees de livraison
+     * @return la commande mise à jour au format JSON
+     * @throws NotFoundException si la commande est introuvable
+     */
     @PUT
     @Path("{id}")
     @Consumes("application/json")
@@ -68,6 +98,13 @@ public class CommandeResource {
         return result;
     }
 
+    /**
+     * Supprime une commande par son identifiant.
+     *
+     * @param id identifiant de la commande
+     * @return reponse 204 si la suppression a reussi
+     * @throws NotFoundException si la commande est introuvable
+     */
     @DELETE
     @Path("{id}")
     public Response deleteCommande(@PathParam("id") int id) {

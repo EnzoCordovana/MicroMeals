@@ -17,8 +17,8 @@ services:
     volumes:
       - db_plats_data:/var/lib/mysql
       - ./docker/plats/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
-    ports:
-      - "3306:3306"
+    # Pas de port expose sur l'hote : seuls les autres conteneurs Docker en ont besoin.
+    # Pour l'acces local depuis l'hote (tests), utiliser compose.plats.local.yml
 
   phpmyadmin_plats:
     image: phpmyadmin:latest
